@@ -20,12 +20,13 @@
             </div>
             <div class="row">
               <div class="col-8">
-                <router-link :to="`/product/${product.id}`">詳細資料</router-link>
-                <!-- <button class="btn btn-dark w-100" type="button">詳細資料</button> -->
+                <router-link :to="`/product/${product.id}`" custom v-slot="{ navigate }">
+                  <button @click="navigate" role="link" class="btn btn-dark w-100" type="button">詳細資料</button>
+                </router-link>
               </div>
               <div class="col-4">
                 <button class="btn btn-danger w-100" type="button"
-                @click="addToCart(product.id)">購物<i class="bi bi-cart-plus"></i></button>
+                @click="addToCart(product.id)"><i class="bi bi-cart-plus"></i></button>
               </div>
             </div>
           </div>
