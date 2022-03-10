@@ -5,9 +5,9 @@
       <div v-for="product in products" class="col-6 col-lg-3 mb-3" :key="product.id">
         <div class="product-item card">
           <div class="card-img">
-            <spam class="img">
+            <span class="img">
               <img :src="product.imageUrl" class="card-img-top">
-            </spam>
+            </span>
           </div>
           <div class="pt-3">
             <h5 class="card-title mb-2">{{ product.title }}</h5>
@@ -26,7 +26,16 @@
               </div>
               <div class="col-4">
                 <button class="btn btn-danger w-100" type="button"
-                @click="addToCart(product.id)"><i class="bi bi-cart-plus"></i></button>
+                @click="addToCart(product.id)"
+                :disabled="isLoading === product.id">
+                  <div class="spinner-border spinner-border-sm" role="status"
+                  v-if="isLoading === product.id">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div v-else>
+                    <i class="bi bi-cart-plus"></i>
+                  </div>
+                </button>
               </div>
             </div>
           </div>
@@ -40,7 +49,8 @@
 export default {
   data () {
     return {
-      products: []
+      products: [],
+      isLoading: ''
     }
   },
   methods: {
@@ -57,9 +67,11 @@ export default {
         qty
       }
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      this.isLoading = id
       this.$http.post(url, { data })
         .then(res => {
           alert(res.data.message)
+          this.isLoading = '' // 清空
         })
     }
   },

@@ -1,12 +1,12 @@
 <template>
     <div class="product">
-        <div class="row">
-          <div class="col-5">
+        <div class="row justify-content-between">
+          <div class="col-lg-6">
             <div class="product-img">
               <img :src="product.imageUrl" class="img-fluid" alt="">
             </div>
           </div>
-          <div class="col-7">
+          <div class="col-lg-5">
             <div class="product-content">
               <h2 class="fw-bold">{{ product.title }}</h2>
               <div class="product-category mb-3">{{ product.category }}</div>
@@ -26,11 +26,23 @@
                 </select>
               </div>
               <button class="btn btn-dark w-100"
-              @click="addToCart">放入購物車</button>
+              @click="addToCart(product.id, qty)">
+                <div class="spinner-border spinner-border-sm" role="status"
+                  v-if="isLoading === product.id">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div v-else>
+                    放入購物車
+                  </div>
+              </button>
             </div>
           </div>
         </div>
-        <router-link to="/products">回產品列表</router-link>
+        <div class="mt-4">
+          <router-link :to="`/products`" custom v-slot="{ navigate }">
+            <button @click="navigate" role="link" class="btn btn-dark" type="button">回產品列表</button>
+          </router-link>
+        </div>
     </div>
 </template>
 
@@ -39,7 +51,8 @@ export default {
   data () {
     return {
       product: [],
-      qty: 1
+      qty: 1,
+      isLoading: ''
     }
   },
   methods: {
@@ -51,8 +64,21 @@ export default {
           this.product = res.data.product
         })
     },
-    addToCart () {
-      // this.$emit('add-cart', this.product.id, this.qty);
+    addToCart (id, qty = 1) {
+      const data = {
+        product_id: id,
+        qty
+      }
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      this.isLoading = id
+      this.$http.post(url, { data })
+        .then(() => {
+          alert('已放入購物車')
+          this.isLoading = ''
+          this.$router.push('/cart')
+        }).catch(err => {
+          alert(err)
+        })
     }
   },
   mounted () {

@@ -2,13 +2,19 @@
   <section>
     <div class="row justify-content-between">
       <div class="col-lg-7">
-        <div class="page-title">購物車</div>
+        <div>
+          <div class="float-end">
+            <button class="btn btn-dark" type="button"
+            @click="deleteAllCarts" :disabled="cartData.carts.length === 0">清空購物車</button>
+          </div>
+          <div class="page-title">購物車</div>
+        </div>
         <!-- 購物車 -->
         <div class="cart">
-          <div class="cart-item text-center d-flex">
+          <div class="cart-item-title text-center d-flex">
             <div class="cart-item-img">購買商品</div>
             <div class="cart-item-body row">
-              <div class="col-4 cart-item-title"></div>
+              <div class="col-4 cart-item-name"></div>
               <div class="col-2 cart-item-sale">單價</div>
               <div class="col-2 cart-item-qua">數量</div>
               <div class="col-2 cart-item-sale">小計</div>
@@ -20,13 +26,13 @@
           </div>
           <div v-else>
             <div v-for="cartItem in cartData.carts" class="cart-item d-flex align-items-center" :key="cartItem.id">
-              <div class="cart-item-img card-img">
+              <div class="cart-item-img">
                 <span class="img">
                   <img class="img-fluid" :src="cartItem.product.imageUrl" alt="">
                 </span>
               </div>
               <div class="cart-item-body row align-items-center">
-                <div class="col-12 col-lg-4 cart-item-title">
+                <div class="col-12 col-lg-4 cart-item-name">
                   {{ cartItem.product.title }}
                 </div>
                 <div class="col-12 col-lg-2 cart-item-sale">$ {{ cartItem.product.price }}</div>
@@ -126,7 +132,8 @@ export default {
       },
       cartData: {
         carts: []
-      }
+      },
+      isLoading: ''
     }
   },
   methods: {
@@ -137,11 +144,22 @@ export default {
           this.cartData = res.data.data
         })
     },
-    deleteCartItem (id) {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${id}`
+    deleteAllCarts () {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/carts`
       this.$http.delete(url)
         .then(res => {
           alert(res.data.message)
+          this.getCart()
+        })
+    },
+    deleteCartItem (id) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${id}`
+      this.isLoading = id
+      this.$http.delete(url)
+        .then(res => {
+          alert(res.data.message)
+          this.getCart()
+          this.isLoading = '' // 清空
         })
     },
     updateCartItem (item) {
@@ -150,12 +168,11 @@ export default {
         qty: item.qty
       }
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${item.id}`
-
-      // this.isLoading = item.id
+      this.isLoading = item.id
       this.$http.put(url, { data })
         .then(res => {
           this.getCart()
-          // this.isLoading = '' 清空
+          this.isLoading = '' // 清空
         })
     },
     sendOrder () {

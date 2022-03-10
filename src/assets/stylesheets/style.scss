@@ -1,0 +1,12 @@
+@import "~bootstrap/scss/functions";
+@import "./foundation/variables";
+@import "./foundation/mixin";
+
+@import "~bootstrap/scss/bootstrap";
+@import "./foundation/base";
+
+@import "./module/custom";
+@import "./layout/main";
+@import "./page/page";
+
+

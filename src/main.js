@@ -10,7 +10,6 @@ import App from './App.vue'
 import router from './router'
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
-import '@/assets/scss/style.scss'
 
 defineRule('required', required)
 defineRule('email', email)
@@ -18,9 +17,8 @@ defineRule('min', min)
 defineRule('max', max)
 
 configure({
-  generateMessage: localize({ zhTW })
+  generateMessage: localize({ zhTW: zhTW })
 })
-
 setLocale('zhTW')
 
 const app = createApp(App)
