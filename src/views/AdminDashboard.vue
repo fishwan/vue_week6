@@ -50,7 +50,7 @@ export default {
     getData () {
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products`
       this.$http.get(url)
-        .then(res => {
+        .then((res) => {
           this.products = res.data.products
         })
     }
